@@ -34,6 +34,8 @@ class Parser:
                         last = rule.action(block, self.handler)
                         if last:
                             break
+                if last:    # missed in source code
+                    break   # missed in source code
         self.handler.end('document')
 
 
