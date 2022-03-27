@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding=utf-8
-import random
+import random, sys
 
 
 NUM_DIGITS = 3  # can be 1 to 10
@@ -11,7 +11,15 @@ def main():
     print('''
           Bagels, a deductive logic game.
           By Al Sweigart al@inventwithpython.com
-          I am thinking of a {}-digit number with no repeated digits.
+          revised by David Wang.
+          ''')
+    while True:
+        # main game loop
+        # stores secret number
+        secretNum = getSecretNum()
+        print('''
+          I am thinking of a {}-digit number  with no repeated digits.
+          every digit is different and in the range [0-9]
           Try to guess what it is. Here are some clues:
           When I say:   That means:
           Pico   One digit is correct but in the wrong position.
@@ -19,22 +27,22 @@ def main():
           Bagels   No digit is correct.
           For example, if the secret number was 248 and your guess was 843, the
           clues would be Fermi Pico.
-          '''.format(NUM_DIGITS))
-    while True:
-        # main game loop
-        # stores secret number
-        secretNum = getSecretNum()
-        print('I have thought up a number.')
-        print('You have {} guesses to get it.'.format(MAX_GUESSES))
+              '''.format(NUM_DIGITS))
+        print('''
+          I have thought up a number.
+          You have {} guesses to get it.
+              '''.format(MAX_GUESSES))
 
         numGuesses = 1
         while numGuesses <= MAX_GUESSES:
             guess = ''
             # keeping looping until they enter a valid guess
+            # or type q to quit the program
             while len(guess) != NUM_DIGITS or not guess.isdecimal():
-                print('Guess #{}: '.format(numGuesses))
+                print('Guess #{} or type q to quit the game: '.format(numGuesses))
                 guess = input('> ')
-
+                if guess == 'q':
+                    sys.exit()
             clues = getClues(guess, secretNum)
             print(clues)
             numGuesses += 1
