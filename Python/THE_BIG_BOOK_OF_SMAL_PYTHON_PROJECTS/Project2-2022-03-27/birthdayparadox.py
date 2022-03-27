@@ -20,10 +20,12 @@ def getBirthday(numberOfBirthday):
         # The year is unimportant for our simulation, as long as all
         # birthdays have the same year.
         startOfYear = datetime.date(2001, 1, 1)
+#        print(startOfYear)
 
         # Get a random day into the year:
         randomNumberOfDay = datetime.timedelta(random.randint(0, 364))
         birthday = startOfYear + randomNumberOfDay
+#        print(birthday)
         birthdays.append(birthday)
     return birthdays
 
@@ -55,7 +57,7 @@ def getMatch(birthdays):
 
 
 # Set up a tuple of month names in order:
-MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jum',
+MONTHS = ('Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
           'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec')
 
 while True:
