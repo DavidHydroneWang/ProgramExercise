@@ -24,7 +24,7 @@ ROBOT = 'R'
 DEAD_ROBOT = 'X'
 
 # (!) try changing this to '#' or '0' or ' '.
-WALL = char(9617)
+WALL = chr(9617)
 
 
 def main():
@@ -54,6 +54,9 @@ def main():
             sys.exit()
 
         # move the player and robots.
+        playerPosition = askForPlayerMove(board, robots, playerPosition)
+        robots = moveRobots(board, robots, playerPosition)
+
         for x, y in robots:
             if (x, y) == playerPosition:
                 displayBoard(board, robots, playerPosition)
@@ -123,7 +126,7 @@ def addRobots(board):
     robots = []
     for i in range(NUM_ROBOTS):
         x, y = getRandomEmptySpace(board, robots)
-        robots.append((x,y))
+        robots.append((x, y))
     return robots
 
 
@@ -198,5 +201,59 @@ def moveRobots(board, robotPositions, playerPosition):
     return a list of (x, y) tuples of new robot positions after they
     have tried to move toward the player.
     """
-    playerX, playerY = playerPosition
+    playerx, playery = playerPosition
     nextRobotPositions = []
+
+    while len(robotPositions) > 0:
+        robotx, roboty = robotPositions[0]
+
+        # determine the direction the robot moves.
+        if robotx < playerx:
+            movex = 1
+        elif robotx > playerx:
+            movex = -1
+        elif robotx == playerx:
+            movex = 0
+
+        if roboty < playery:
+            movey = 1
+        elif roboty > playery:
+            movey = -1
+        elif roboty == playery:
+            movey = 0
+
+        # check if the robot would run into a wall. and adjust course.
+        if board[(robotx + movex, roboty + movey)] == WALL:
+            # robot would run into a wall, so come up with a new move.
+            if board[(robotx + movex, roboty)] == EMPTY_SPACE:
+                movey = 0
+            elif board[(robotx, roboty + movey)] == EMPTY_SPACE:
+                movex = 0
+            else:
+                # robot can't move/
+                movex = 0
+                movey = 0
+        newRobotx = robotx + movex
+        newRoboty = roboty + movey
+
+        if (board[(robotx, roboty)] == DEAD_ROBOT
+            or board[(newRobotx, newRoboty)] == DEAD_ROBOT):
+            # robot is at a crash site, remove it.
+            del robotPositions[0]
+            continue
+
+        # check if it moves into a robot, then destroy both robots.
+        if (newRobotx, newRoboty) in nextRobotPositions:
+            board[(newRobotx, newRoboty)] = DEAD_ROBOT
+            nextRobotPositions.remove((newRobotx, newRoboty))
+        else:
+            nextRobotPositions.append((newRobotx, newRoboty))
+
+        # remove robots from robotPositions as they move.
+        del robotPositions[0]
+    return nextRobotPositions
+
+
+# if this program was run (instead of imported), run the game.
+if __name__ == '__main__':
+    main()
