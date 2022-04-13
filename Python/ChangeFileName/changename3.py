@@ -18,6 +18,7 @@ class PathHandler:
             if os.path.isfile(i):
                 name = i
                 name = re.sub(r'[\*>#？：，：。、【】:\?,\n\t]','',name)
+                name = re.sub(r'\s','',name)
                 name = re.sub(r'[\（]','(',name)
                 name = re.sub(r'[\）]',')',name)
                 temp = name.split('.')
