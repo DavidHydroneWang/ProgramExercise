@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+<Document>
+<Placemark>
+<name>110.8.88.36</name>
+<Point>
+<coordnates>37.585900, 126.774500</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>188.39.7.79</name>
+<Point>
+<coordnates>51.935000, -2.227700</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>28.38.166.8</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>21.133.59.224</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>153.117.22.211</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>138.88.201.132</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>1.103.102.104</name>
+<Point>
+<coordnates>37.511200, 126.974100</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>5.246.3.148</name>
+<Point>
+<coordnates>25.000000, 45.000000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>166.123.95.157</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>219.173.149.77</name>
+<Point>
+<coordnates>40.816700, 140.733300</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>8.155.194.116</name>
+<Point>
+<coordnates>1.366700, 103.800000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>215.60.119.128</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>133.115.139.226</name>
+<Point>
+<coordnates>35.690000, 139.690000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>137.153.2.196</name>
+<Point>
+<coordnates>35.690000, 139.690000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>217.30.118.1</name>
+<Point>
+<coordnates>55.961600, -4.817900</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>63.77.163.212</name>
+<Point>
+<coordnates>37.751000, -97.822000</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>57.70.59.157</name>
+<Point>
+<coordnates>-33.494000, 143.210400</coordnates>
+</Point>
+</Placemark>
+<Placemark>
+<name>89.233.181.180</name>
+<Point>
+<coordnates>50.050000, 14.400000</coordnates>
+</Point>
+</Placemark>
+</Document>
+</kml>
+
