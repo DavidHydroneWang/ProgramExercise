@@ -18,9 +18,11 @@ gunfire_path = os.path.join(root_dir, 'gunfire.wav')
 tone_path = os.path.join(root_dir, 'tone.wav')
 
 # set up Haar cascade for face detection
-path = 'C:/Python372/Lib/site-packages/cv2/data/'
-face_cascade = cv.CascadeClassifier(path + 'haarcascade_frontalface_default.xml')
-eye_cascade = cv.CascadeClassifier(path + 'haarcascade_eye.xml')
+#path = 'C:/Python372/Lib/site-packages/cv2/data/'
+#face_cascade = cv.CascadeClassifier(path + 'haarcascade_frontalface_default.xml')
+face_detector = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_frontalface_default.xml')
+#eye_cascade = cv.CascadeClassifier(path + 'haarcascade_eye.xml')
+eye_cascade = cv.CascadeClassifier(cv.data.haarcascades + 'haarcascade_eye.xml')
 
 # set up corridor images
 os.chdir('corrdior_5')
