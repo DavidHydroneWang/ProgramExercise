@@ -67,7 +67,7 @@ def get_trailer_file_urls(page_url, res, types, download_all_urls):
     if page_url and page_url[-1] == "/":
         page_url = page_url[:-1]
 
-    film_data = load_json_from_url(page_url, '/data/page.json')
+    film_data = load_json_from_url(page_url + '/data/page.json')
     if not film_data:
         return urls
 
@@ -326,3 +326,272 @@ def validate_settings(settings):
     Validate the settings in the given dictionary. If any setting is
     invalid, raises an Error with a user message
     """
+    valid_resolutuons = ['480', '720', '1080']
+    valid_video_types = ['single_trailer', 'trailers', 'all']
+    valid_output_levels = ['debug', 'downloads', 'error']
+
+    required_settings = ['resolution', 'download_dir', 'video_types',
+                         'output_level', 'list_file']
+
+    for setting in required_settings:
+        if setting not in settings:
+            raise ValueError("cannot find value for {}".format(setting))
+
+    if settings['resolution'] not in valid_resolutuons:
+        res_string = ', '.join(valid_resolutuons)
+        raise ValueError("invalid resolution. Valid values: {}"
+                         .format(res_string))
+
+    if not os.path.exists(settings['download_dir']):
+        raise ValueError("the download directory must be a valid path.")
+
+    if settings['video_types'].lower() not in valid_video_types:
+        types_string = ', '.join(valid_video_types)
+        raise ValueError("invalid video type. Valid values: {}"
+                         .format(types_string))
+
+    if settings['output_level'].lower() not in valid_output_levels:
+        output_string = ', '.join(valid_output_levels)
+        raise ValueError("invalid output level. Valid values: {}"
+                         .format(output_string))
+
+    if not os.path.exists(os.path.dirname(settings['list_file'])):
+        raise ValueError("the list file directory must be a valid path")
+
+    return True
+
+
+def get_config_values(config_path, defaults):
+    """get the script's configuration values and return them in a dict
+    if a config file exists, merge its values with the  defaults. if no config
+    files exists, just return the defaults"""
+
+    config = ConfigParser(defaults)
+    config_values = config.defaults()
+
+    config_paths = [
+        config_path,
+        os.path.join(os.path.expanduser('~'), '.trailers.cfg'),
+    ]
+
+    config_file_found = False
+    for path in config_paths:
+        if os.path.exists(path):
+            config_file_found = True
+            config.read(path)
+            config_values = config.defaults()
+            break
+
+    if config_values.get('download_all_urls', ''):
+        config_values['download_all_urls'] = (
+            [get_url_path(s)] for
+            s in config_values['download_all_urls'].split(',')
+        )
+    else:
+        config_values['download_all_urls'] = []
+
+    if not config_file_found:
+        logging.info('Config file not found. Using default values.')
+
+    return config_values
+
+
+def get_settings():
+    """validate and return the user's settings as a combination of the default
+    settings, the settings file (if it exists) and the command line options
+    (if given)"""
+
+    # don't include list_file in the defaults, because the default value is
+    # dependent on the configured download_dir, which isn't known until the
+    # command line and config file have been parsed
+    scrip_dir = os.path.abspath(os.path.dirname(__file__))
+    defaults = {
+        'download_dir': scrip_dir,
+        'output_level': 'debug',
+        'resolution': '720',
+        'video_types': 'single_trailer',
+    }
+
+    args = get_command_lien_arguments()
+
+    config_path = args.get('config_path', "{}/settings.cfg".format(scrip_dir))
+    config = get_config_values(config_path, defaults)
+
+    settings = config.copy()
+    settings.update(args)
+
+    settings['download_dir'] = os.path.expanduser(settings['download_dir'])
+    settings['config_path'] = config_path
+
+    if ('list_file' not in args) and ('list_file' not in config):
+        settings['list_file'] = os.path.join(
+            settings['download_dir'],
+            'download_list.txt'
+        )
+
+    settings['list_file'] = os.path.expanduser(settings['list_file'])
+
+    validate_settings(settings)
+
+    return settings
+
+
+def get_command_lien_arguments():
+    """return a dictionary containing all of the command-line arguments
+    specified when the script was run."""
+
+    parser = argparse.ArgumentParser(
+        description='Download movie trailers from the Apple website. With no '
+        'arguments, will download all of the trailers in the current '
+        '"Just Added" list. when a trailer page URL is specified, will only'
+        'download the single trailer at that URL. Example URL: '
+        'http://trailers.apple.com/trailers/lions_gate/thehungergames/'
+    )
+
+    parser.add_argument(
+        '-c, --config',
+        action='store',
+        dest='config',
+        help='The location of the config file. Defaults to "settings.cfg"' +
+        'in the scipt directory'
+    )
+
+    parser.add_argument(
+        '-d, --dir',
+        action='store',
+        dest='dir',
+        help='The directory to which the trailers should be downloaded. ' +
+        'Defaults to the script directory.'
+    )
+
+    parser.add_argument(
+        '-l, --listfile',
+        action='store',
+        dest='fielpath',
+        help='The location of the download list file. The names of the ' +
+        'previously downloaded trailers are stored in this file. ' +
+        'Defaults to "Download_list.txt" in the download directory.'
+    )
+
+    parser.add_argument(
+        '-r, --resolution',
+        action='store',
+        dest='resolution',
+        help='The preferred video resolution to download. Valid options are ' +
+        '"1080", "720", and "480".'
+    )
+
+    parser.add_argument(
+        '-u, --url',
+        action='store',
+        dest='url',
+        help='The URL of the Apple Trailers web page for a single trailer.'
+    )
+
+    parser.add_argument(
+        '-v, --videotypes',
+        action='store',
+        dest='types',
+        help='The types of videos to be downloaded. Valid options are ' +
+        '"single_trailer", "trailers", and "all".'
+    )
+
+    parser.add_argument(
+        '-o, --output_level',
+        action='store',
+        dest='output',
+        help='The level of console output. Valid options are ' +
+        '"debug", "downloads", and "error".'
+    )
+    results = parser.parse_args()
+    args = {
+        'config_path': results.config,
+        'download_dir': results.dir,
+        'list_file': results.filepath,
+        'page': results.url,
+        'resolution': results.resolution,
+        'video_types': results.types,
+        'output_level': results.output,
+    }
+
+    # remove all pairs that were not set on the command line.
+    set_args = {}
+    for name in args:
+        if args[name] is not None:
+            set_args[name] = args[name]
+
+    return set_args
+
+
+def configure_logging(output_level):
+    """configure the logger to print messages with at least the level of the given
+    configuration value."""
+
+    output_level = output_level.lower()
+
+    log_level = logging.DEBUG
+    if output_level == 'downloads':
+        log_level = logging.INFO
+    elif output_level == 'error':
+        log_level = logging.ERROR
+
+    logging.basicConfig(format='%(message)s')
+    logging.getLogger().setLevel(log_level)
+
+
+def load_json_from_url(url):
+    """Takes a URL and returns a Python dict representing the JSON of hte
+    URL's contents. If there is an error fetching the URL or invlid JSON is
+    returned, an empty dict is returned."""
+    try:
+        response = urlopen(url)
+        str_response = response.read().decode('utf-8')
+        return json.loads(str_response)
+    except (URLError, ValueError):
+        logging.error("*** Error: could not load data from %s", url)
+        return {}
+
+
+def main():
+    """the main script function"""
+
+    # set the default log level so we can log messages generated while loading
+    # the settings
+    configure_logging('')
+
+    try:
+        settings = get_settings()
+    except MissingSectionHeaderError:
+        logging.error("configurarion file is missing a header section, "
+                      "try adding [DEFAULT] at the top of the file")
+        return
+    except (Error, ValueError) as ex:
+        logging.error("configuration error: %s", ex)
+        return
+
+    configure_logging(settings['output_level'])
+
+    logging.debug("Using configuration values:")
+    logging.debug("Loaded configuration from %s", settings['config_path'])
+    for name in sorted(settings):
+        if name != 'config_path':
+            logging.debug("    %s: %s", name, settings[name])
+
+    logging.debug("")
+
+    # do the download
+    if 'page' in settings:
+        # the trailer page URL was passed in on the command line
+        download_trailers_from_page(settings['page'], settings)
+    else:
+        just_added_url = ('http://trailers.apple.com/trailers/'
+                          'home/feeds/just_added.json')
+        newest_trailers = load_json_from_url(just_added_url)
+
+        for trailer in newest_trailers:
+            url = 'http://trailers.apple.com' + trailer['location']
+            download_trailers_from_page(url, settings)
+
+
+if __name__ == '__main__':
+    main()
