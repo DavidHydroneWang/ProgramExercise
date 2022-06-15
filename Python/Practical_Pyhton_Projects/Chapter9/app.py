@@ -34,7 +34,7 @@ with ThreadPoolExecutor(max_workers=10) as e:
     for domain in domain_names:
         ip_set.add(e.submit(check_url, domain))
 
-access_token = '**********'
+access_token = '406464d8aa2dd7'
 handler = ipinfo.getHandler(access_token)
 
 
@@ -65,39 +65,40 @@ for loc in as_completed(complete_details):
         lon.append(float(loc.result()['longitude']))
     except:
         continue
-
-fig, ax = plt.subplots(figsize=(40,20))
+# print(len(complete_details))
+# print(len(lat), len(lon))
+fig, ax = plt.subplots(figsize=(40, 20))
 fig.subplots_adjust(left=0, bottom=0, right=1, top=1, wspace=None,
                     hspace=None)
 
-map = Basemap()
+m2 = Basemap()
 
 # dark grey land, black lakes
-map.fillcontinents(color='#2d2d2d',lake_color='#000000')
+m2.fillcontinents(color='#2d2d2d', lake_color='#000000')
 # black background
-map.drawmapboundary(fill_color='#000000')
+m2.drawmapboundary(fill_color='#000000')
 # thin white line for country borders
-map.drawcountries(linewidth=0.15, color="w")
-map.drawstates(linewidth=0.1, color="w")
+m2.drawcountries(linewidth=0.15, color="w")
+m2.drawstates(linewidth=0.1, color="w")
 
 
 def init():
-    plt.text( -170, -72,'Server locations of top 500 websites '
-        '(by traffic)\nPlot realized with Python and the Basemap library'
-        '\n\n~Yasoob\n hi@yasoob.me', ha='left', va='bottom',
-        size=28, color='silver')
+    plt.text(-170, -72, 'Server locations of top 500 websites '
+             '(by traffic)\nPlot realized with Python and the Basemap library'
+             '\n\n~Yasoob\n hi@yasoob.me', ha='left', va='bottom',
+             size=28, color='silver')
 
 
 def update(frame_number):
     print(frame_number)
-    m2.plt(lon[frame_number], lat[frame_number], linestyle='none',
-           marker="o", markersize=25, alpha=0.4, c="white",
-           markeredgecolor="silver", markeredgewidth=1)
+    m2.plot(lon[frame_number], lat[frame_number], linestyle='none',
+            marker="o", markersize=25, alpha=0.4, c="white",
+            markeredgecolor="silver", markeredgewidth=1)
 
 
 ani = animation.FuncAnimation(fig, update, interval=1,
                               frames=490, init_func=init)
 
-writer = animation.FFMpegWriter(fps=20, metadata=dict(artist='Me'), bitrate=1800)
-# writer = writer(fps=20, metadata=dict(artist='Me'), bitrate=1800)
+writer = animation.writers['ffmpeg']
+writer = writer(fps=20, metadata=dict(artist='Me'), bitrate=1800)
 ani.save('anim.mp4', writer=writer)
