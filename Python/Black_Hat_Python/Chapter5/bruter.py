@@ -8,7 +8,7 @@ import sys
 AGENT = 'Mozilla/5.0 (X11: Linux x86_64; rv:19.0) ' \
         'Gecko/20100101 Firefox/19.0'
 EXTENSIONS = ['.php', '.bak', '.orig', '.inc']
-TARGET = 'http://textphp.vulnweb.com'
+TARGET = 'http://testphp.vulnweb.com'
 THREADS = 50
 WORDLIST = 'all.txt'
 
@@ -43,8 +43,10 @@ def get_words(resume=None):
 
 def dir_bruter(words):
     headers = {'User-Agent': AGENT}
+#    print(words)
     while not words.empty():
         url = f'{TARGET}{words.get()}'
+#        print(url)
         try:
             r = requests.get(url, headers=headers)
         except requests.exceptions.ConnectionError:
