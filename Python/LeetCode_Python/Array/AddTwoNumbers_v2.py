@@ -11,7 +11,7 @@ class ListNode:
 class Solution:
     def addTwoNumbers(self, l1: ListNode, l2: ListNode) -> ListNode:
         number = 0
-        stack = 0
+        stack = []
         number += self.LinkedListToInterger(l1)
         number += self.LinkedListToInterger(l2)
         if number == 0:

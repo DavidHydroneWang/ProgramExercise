@@ -2,6 +2,37 @@
 # coding=utf-8
 
 
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        res = ListNode(-1)
+        l3 = res
+#        length = min(len(l1), len(l2))
+        oldinc = 0
+        while l1 is not None and l2 is not None:
+            oldinc, current = divmod(oldinc + l1.val + l2.val, 10)
+            l3.next = ListNode(current)
+            l1 = l1.next
+            l2 = l2.next
+            l3 = l3.next
+
+        while l1 is not None:
+            oldinc, current = divmod(oldinc + l1.val, 10)
+            l3.next = ListNode(current)
+            l1 = l1.next
+            l3 = l3.next
+        while l2 is not None:
+            oldinc, current = divmod(oldinc + l2.val, 10)
+            l3.next = ListNode(current)
+            l2 = l2.next
+            l3 = l3.next
+
+        if oldinc == 1:
+            l3.next = ListNode(oldinc)
+
+
+        return res.next
+
+
 class LinkedList:
     def __init__(self, x):
         self.val = x
