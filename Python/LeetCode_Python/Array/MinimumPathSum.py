@@ -2,6 +2,24 @@
 # coding=utf-8
 class Solution:
     def minPathSum(self, grid: List[List[int]]) -> int:
+        n = len(grid)
+        m = len(grid[0])
+        dp = [[0] * m for _ in range(n)]
+        for i in range(m):
+            dp[0][i] = sum(grid[0][:i + 1])
+        for j in range(1, n):
+            for i in range(j + 1):
+                dp[j][0] += grid[i][0]
+
+        for i in range(1, n):
+            for j in range(1, m):
+                dp[i][j] = dp[i][j] +  grid[i][j] +  min(dp[i][j - 1], dp[i - 1][j])
+
+        return dp[n - 1][m - 1]
+
+
+class Solution:
+    def minPathSum(self, grid: List[List[int]]) -> int:
         dp = [[float('inf') for _ in range(len(grid[0]) + 1)] for _ in range(len(grid) + 1)]
         for i in range(1, len(grid) + 1):
             for j in range(1, len(grid[0]) + 1):
