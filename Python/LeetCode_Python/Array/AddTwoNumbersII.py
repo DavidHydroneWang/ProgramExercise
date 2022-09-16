@@ -32,3 +32,69 @@ class Solution:
             n = n * 10 + l.val
             l = l.next
         return n
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        stack1 = []
+        stack2 = []
+
+        while l1:
+            stack1.append(l1)
+            l1 = l1.next
+
+        while l2:
+            stack2.append(l2)
+            l2 = l2.next
+
+        head = None
+        carry = 0
+
+        while carry or stack1 or stack2:
+            if stack1:
+                carry += stack1.pop().val
+            if stack2:
+                carry += stack2.pop().val
+            node = ListNode(carry % 10)
+            node.next = head
+            head = node
+            carry //= 10
+
+        return head
+
+
+# Definition for singly-linked list.
+# class ListNode:
+#     def __init__(self, val=0, next=None):
+#         self.val = val
+#         self.next = next
+class Solution:
+    def addTwoNumbers(self, l1: Optional[ListNode], l2: Optional[ListNode]) -> Optional[ListNode]:
+        num1, num2 = 0, 0
+
+        node = l1
+        while node:
+            num1 = num1 * 10 + node.val
+            node = node.next
+        node = l2
+        while node:
+            num2 = num2 * 10 + node.val
+            node = node.next
+
+        total = num1 + num2
+        if total == 0:              # return single node with zero
+            return ListNode(0)
+        result = None
+
+        while total:
+            total, digit = divmod(total, 10)
+            new_node = ListNode(digit)
+            new_node.next = result  # make digit start of result
+            result = new_node
+
+        return result
