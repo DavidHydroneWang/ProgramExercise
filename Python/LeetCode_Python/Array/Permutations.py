@@ -123,3 +123,45 @@ class Solution2(object):
             nums[i], nums[index] = nums[index], nums[i]     # swap back
 
         return permutations
+
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        ans = []
+        used = [False] * len(nums)
+
+        def dfs(path: List[int]) -> None:
+            if len(path) == len(nums):
+                ans.append(path.copy())
+                return
+
+            for i, num in enumerate(nums):
+                if used[i]:
+                    continue
+                used[i] = True
+                path.append(num)
+                dfs(path)
+                path.pop()
+                used[i] = False
+
+        dfs([])
+        return ans
+
+
+class Solution:
+    def permute(self, nums: List[int]) -> List[List[int]]:
+        res = []    # 存放所有符合条件结果的集合
+        path = []   # 存放当前符合条件的结果
+        def backtracking(nums):             # nums 为选择元素列表
+            if len(path) == len(nums):      # 说明找到了一组符合条件的结果
+                res.append(path[:])         # 将当前符合条件的结果放入集合中
+                return
+
+            for i in range(len(nums)):      # 枚举可选元素列表
+                if nums[i] not in path:     # 从当前路径中没有出现的数字中选择
+                    path.append(nums[i])    # 选择元素
+                    backtracking(nums)      # 递归搜索
+                    path.pop()              # 撤销选择
+
+        backtracking(nums)
+        return res
