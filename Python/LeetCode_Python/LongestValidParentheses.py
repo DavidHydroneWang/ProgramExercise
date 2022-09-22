@@ -28,7 +28,7 @@ class Solution(object):
         :rtype: int
         """
         stack = []                  # indices of brackets that are not matched
-
+        stack.append(-1)
         for i, c in enumerate(s):
             if c == ")" and stack and s[stack[-1]] == '(':
                 stack.pop()         # close matches an open on the stack
@@ -42,3 +42,16 @@ class Solution(object):
             max_length = max(max_length, stack[index] - stack[index-1] - 1)
 
         return max_length
+
+
+class Solution:
+    def longestValidParentheses(self, s: str) -> int:
+        s2 = ')' + s
+        # dp[i] := length of longest valid parentheses substring of s2[1..i]
+        dp = [0] * len(s2)
+
+        for i in range(1, len(s2)):
+            if s2[i] == ')' and s2[i - dp[i - 1] - 1] == '(':
+                dp[i] = dp[i - 1] + dp[i - dp[i - 1] - 2] + 2
+
+        return max(dp)
