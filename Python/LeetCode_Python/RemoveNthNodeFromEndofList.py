@@ -21,3 +21,44 @@ class Solution:
             curr = curr.next
 
         return res.next
+
+
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        if head is None:
+            return head
+        temp = head
+        sumall = 0
+        while temp is not None:
+            sumall += 1
+            temp = temp.next
+        target = sumall - n - 1
+        if target < 0:
+            return head.next
+        res = head
+        for i in range(sumall):
+            if i == target:
+                res.next = res.next.next
+                break
+            res = res.next
+
+        return head
+
+
+class Solution:
+    def removeNthFromEnd(self, head: Optional[ListNode], n: int) -> Optional[ListNode]:
+        fast = slow = head
+
+        for _ in range(n):
+            fast = fast.next
+
+        if not fast:
+            return head.next
+
+        while fast.next:
+            fast = fast.next
+            slow = slow.next
+
+        slow.next = slow.next.next
+
+        return head
