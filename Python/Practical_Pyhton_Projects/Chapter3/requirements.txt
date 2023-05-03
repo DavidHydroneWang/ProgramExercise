@@ -4,7 +4,7 @@ cffi==1.14.3
 click==7.1.2
 cssselect2==0.3.0
 defusedxml==0.6.0
-flask>=2.2.5
+flask ==2.2.5
 Flask-SQLAlchemy==2.4.4
 html5lib==1.1
 itsdangerous==1.1.0
